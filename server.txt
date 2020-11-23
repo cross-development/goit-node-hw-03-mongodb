@@ -1,0 +1,51 @@
+//Core
+const express = require('express');
+//Middleware
+const cors = require('cors');
+require('dotenv').config();
+//Routes
+const contactRouter = require('./contacts/contacts.router');
+
+class ContactsServer {
+	//Initial server state
+	constructor() {
+		this.server = null;
+	}
+
+	//Server start
+	start() {
+		this.initServer();
+		this.initDatabase();
+		this.initMiddleware();
+		this.initRoutes();
+		this.startListening();
+	}
+
+	//Server init
+	initServer() {
+		this.server = express();
+	}
+
+	//MongoDb init
+	initDatabase() {}
+
+	//Middleware init
+	initMiddleware() {
+		this.server.use(express.json());
+		this.server.use(cors({ origin: 'http://localhost:3000' }));
+	}
+
+	//Routes init
+	initRoutes() {
+		this.server.use('/api/contacts', contactRouter);
+	}
+
+	//Listening on port 2000
+	startListening() {
+		this.server.listen(process.env.PORT, () => {
+			console.log('Server started listening on port', process.env.PORT);
+		});
+	}
+}
+
+module.exports = ContactsServer;
